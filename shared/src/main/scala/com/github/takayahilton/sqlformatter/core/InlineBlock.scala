@@ -7,7 +7,7 @@ package com.github.takayahilton.sqlformatter.core
   * These blocks are formatted on a single line, unlike longer parenthized
   * expressions where open-parenthesis causes newline and increase of indentation.
   */
-class InlineBlock {
+private[core] class InlineBlock {
   private[this] var level: Int = 0
 
   /**
@@ -67,6 +67,6 @@ class InlineBlock {
   }
 }
 
-object InlineBlock {
+private[core] object InlineBlock {
   private val INLINE_MAX_LENGTH: Int = 50
 }

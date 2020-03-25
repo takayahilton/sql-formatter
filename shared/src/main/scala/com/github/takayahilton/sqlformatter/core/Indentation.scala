@@ -8,7 +8,7 @@ package com.github.takayahilton.sqlformatter.core
   * - BLOCK_LEVEL : increased by open-parenthesis
   * - TOP_LEVEL : increased by RESERVED_TOPLEVEL words
   */
-class Indentation(indent: String) {
+private[core] class Indentation(indent: String) {
 
   private[this] var indentTypes: List[IndentTypes] = Nil
 
@@ -53,8 +53,8 @@ class Indentation(indent: String) {
   }
 }
 
-sealed trait IndentTypes extends Product with Serializable
-object IndentTypes {
+private[core] sealed trait IndentTypes extends Product with Serializable
+private[core] object IndentTypes {
   case object INDENT_TYPE_TOP_LEVEL extends IndentTypes
   case object INDENT_TYPE_BLOCK_LEVEL extends IndentTypes
 }

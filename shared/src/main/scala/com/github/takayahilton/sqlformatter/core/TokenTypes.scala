@@ -1,8 +1,8 @@
 package com.github.takayahilton.sqlformatter.core
 
-sealed trait TokenTypes extends Product with Serializable
+private[core] sealed trait TokenTypes extends Product with Serializable
 
-object TokenTypes {
+private[core] object TokenTypes {
   case object WHITESPACE extends TokenTypes
   case object WORD extends TokenTypes
   case object STRING extends TokenTypes
