@@ -6,11 +6,14 @@ scala:
 
 language: scala
 script: >
-  sbt ++$TRAVIS_SCALA_VERSION check test
+  sbt ++$TRAVIS_SCALA_VERSION check coverage test sql_formatterJVM/coverageReport
 
 jdk:
   - openjdk8
   - openjdk11
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 cache:
   directories:

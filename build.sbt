@@ -23,6 +23,10 @@ lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform)
     sharedSettings,
     publishingSettings
   )
+  .jsSettings(
+    //scalac-scoverage-plugin Scala.js 1.0 is not yet released.
+    coverageEnabled := false
+  )
 
 lazy val sql_formatterJVM = sql_formatter.jvm
 lazy val sql_formatterJS = sql_formatter.js
