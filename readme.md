@@ -43,7 +43,7 @@ FROM
 
 ### Dialect
 
-You can pass dialect with `FormatConfig` :
+You can pass dialect name to SqlFormatter.of :
 
 ```scala
 import com.github.takayahilton.sqlformatter._
