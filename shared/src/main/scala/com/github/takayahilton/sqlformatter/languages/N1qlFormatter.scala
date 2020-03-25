@@ -1,7 +1,6 @@
 package com.github.takayahilton.sqlformatter.languages
 
 import com.github.takayahilton.sqlformatter.core.DialectConfig
-import com.github.takayahilton.sqlformatter.core.DialectConfig
 
 object N1qlFormatter {
   private val reservedWords = List(

@@ -1,15 +1,7 @@
 package com.github.takayahilton.sqlformatter
 
-import com.github.takayahilton.sqlformatter.core.FormatConfig
-import com.github.takayahilton.sqlformatter.languages.{
-  AbstractFormatter,
-  Db2Formatter,
-  N1qlFormatter,
-  PlSqlFormatter,
-  StandardSqlFormatter
-}
-import com.github.takayahilton.sqlformatter.core.FormatConfig
 import com.github.takayahilton.sqlformatter.languages._
+import com.github.takayahilton.sqlformatter.core.FormatConfig
 
 object SqlFormatter {
 

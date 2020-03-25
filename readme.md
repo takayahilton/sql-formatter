@@ -3,7 +3,9 @@
 [![Build Status](https://travis-ci.org/takayahilton/sql-formatter.png?branch=master)](https://travis-ci.org/takayahilton/sql-formatter)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.takayahilton/sql-formatter_2.12.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.takayahilton%22%20AND%20a:%22sql-formatter_2.12%22)
 
-SQL Formatter for Scala.
+Scala port of great SQL formatter <https://github.com/zeroturnaround/sql-formatter>, <https://github.com/vertical-blank/sql-formatter>.
+
+Written with only Scala Standard Library, without dependencies.
 
 
 ## Usage
@@ -11,13 +13,13 @@ SQL Formatter for Scala.
 ### Scala (on JVM)
 
 ```sbt
-libraryDependencies += "com.github.takayahilton" %% "sql-formatter" % "1.0.1"
+libraryDependencies += "com.github.takayahilton" %% "sql-formatter" % "1.0.0"
 ```
 
 ### Scala.js
 
 ```sbt
-libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.0.1"
+libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.0.0"
 ```
 
 ### Examples
@@ -25,6 +27,8 @@ libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.0.1"
 You can easily use `com.github.takayahilton.sqlformatter.SqlFormatter` :
 
 ```scala
+import com.github.takayahilton.sqlformatter._
+
 SqlFormatter.format("SELECT * FROM table1")
 ```
 
@@ -42,9 +46,9 @@ FROM
 You can pass dialect with `FormatConfig` :
 
 ```scala
-SqlFormatter.format(
-  "SELECT *",
-  FormatConfig(dialect = SqlDialect.CouchbaseN1QL))
+import com.github.takayahilton.sqlformatter._
+
+SqlFormatter.of(SqlDialect.CouchbaseN1QL).format("SELECT *")
 ```
 
 Currently just four SQL dialects are supported:
@@ -57,12 +61,14 @@ Currently just four SQL dialects are supported:
 ### Format
 
 Defaults to two spaces.
-You can pass indent string with `FormatConfig` to `format` :
+You can pass indent string to `format` :
 
 ```scala
+import com.github.takayahilton.sqlformatter._
+
 SqlFormatter.format(
   "SELECT * FROM table1",
-  FormatConfig(indent = "    "))
+  indent = "    ")
 ```
 
 This will output:
@@ -76,14 +82,16 @@ FROM
 
 ### Placeholders replacement
 
-You can pass `Seq` to `formatWithIndexedParams`, or `Map` to `formatWithNamedParams` :
+You can pass `Seq` or `Map` to `format` :
 
 ```scala
+import com.github.takayahilton.sqlformatter._
+
 // Named placeholders
-SqlFormatter.formatWithNamedParams("SELECT * FROM tbl WHERE foo = @foo", params = Map("foo" -> "'bar'"))
+SqlFormatter.format("SELECT * FROM tbl WHERE foo = @foo", params = Map("foo" -> "'bar'"))
 
 // Indexed placeholders
-SqlFormatter.formatWithIndexedParams("SELECT * FROM tbl WHERE foo = ?", params = Seq("'bar'"))
+SqlFormatter.format("SELECT * FROM tbl WHERE foo = ?", params = Seq("'bar'"))
 ```
 
 Both result in:
@@ -96,5 +104,3 @@ FROM
 WHERE
   foo = 'bar'
 ```
-
-Same as the `format` method, both `formatWithNamedParams` and `formatWithIndexedParams` accept `FormatConfig`.
