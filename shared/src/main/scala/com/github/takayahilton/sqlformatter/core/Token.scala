@@ -1,6 +1,6 @@
 package com.github.takayahilton.sqlformatter.core
 
-case class Token(
+final case class Token(
     tokenType: TokenTypes,
     value: String,
     regex: Option[String],
