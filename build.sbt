@@ -1,141 +1,33 @@
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
-import ReleaseTransformations._
+enablePlugins(ScalaJSPlugin)
 
-scalaVersion in ThisBuild       := "2.12.11"
-crossScalaVersions in ThisBuild := Seq("2.11.12", scalaVersion.value, "2.13.1")
-organization in ThisBuild       := "com.github.takayahilton"
+name := "sql-formatter demo"
+scalaVersion := "2.13.1"
 
-onChangedBuildSource in Global := ReloadOnSourceChanges
+libraryDependencies ++= Seq(
+  "org.scala-js" %%% "scalajs-dom" % "1.0.0",
+  "com.github.takayahilton" %%% "sql-formatter" % "1.0.0"
+)
 
-lazy val root = project
-  .in(file("."))
-  .settings(moduleName := "root")
-  .settings(publishingSettings)
-  .settings(noPublishSettings)
-  .aggregate(sql_formatterJVM, sql_formatterJS)
-  .dependsOn(sql_formatterJVM, sql_formatterJS)
+scalaJSUseMainModuleInitializer := true
 
-lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Full)
-  .in(file("."))
-  .settings(
-    moduleName := "sql-formatter",
-    sharedSettings,
-    publishingSettings
-  )
-  .jsSettings(
-    //scalac-scoverage-plugin Scala.js 1.0 is not yet released.
-    coverageEnabled := false
-  )
+lazy val compileJs = taskKey[Unit]("Compile the project")
+lazy val copyJsIndex = taskKey[Unit]("Copy Js to index.html")
+lazy val copyJsMapIndex = taskKey[Unit]("Copy Js map to index.html")
 
-lazy val sql_formatterJVM = sql_formatter.jvm
-lazy val sql_formatterJS = sql_formatter.js
-
-lazy val commonScalacOptions = Def.setting {
-  Seq(
-    "-deprecation",
-    "-encoding",
-    "UTF-8",
-    "-feature",
-    "-language:_",
-    "-unchecked",
-    "-Xlint",
-    "-Xlint:-nullary-unit",
-    "-Ywarn-numeric-widen",
-    "-Ywarn-value-discard"
-  ) ++ {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, v)) if v >= 13 =>
-        Seq(
-          "-Ymacro-annotations"
-        )
-      case _ =>
-        Seq(
-          "-Xfatal-warnings",
-          "-Yno-adapted-args",
-          "-Ypartial-unification",
-          "-Xfuture"
-        )
-    }
-  }
+copyJsIndex := {
+  val from = target.value / "scala-2.13" / "sql-formatter-demo-opt.js"
+  val to = baseDirectory.value / "sql-formatter-demo-opt.js"
+  IO.copyFile(from, to)
 }
 
-wartremoverErrors in (Compile, compile) ++= Seq(
-  Wart.ArrayEquals,
-  Wart.AnyVal,
-  Wart.DefaultArguments,
-  Wart.Enumeration,
-  Wart.ExplicitImplicitTypes,
-  Wart.FinalCaseClass,
-  Wart.FinalVal,
-  Wart.LeakingSealed,
-  Wart.NonUnitStatements,
-  Wart.Serializable,
-  Wart.TraversableOps
-)
+copyJsMapIndex := {
+  val from = target.value / "scala-2.13" / "sql-formatter-demo-opt.js.map"
+  val to = baseDirectory.value / "sql-formatter-demo-opt.js.map"
+  IO.copyFile(from, to)
+}
 
-lazy val sharedSettings = Seq(
-  scalacOptions ++= commonScalacOptions.value,
-  libraryDependencies ++= Seq(
-    "org.scalatest" %%% "scalatest" % "3.1.1" % Test
-  )
-) ++ Seq(Compile, Test).map(scalacOptions in (_, console) -= "-Xfatal-warnings")
-
-lazy val publishingSettings = Seq(
-  name                    := "sql-formatter",
-  description             := "SQL Formatter for Scala",
-  publishMavenStyle       := true,
-  publishArtifact in Test := false,
-  pomIncludeRepository    := { _ => false },
-  publishTo := Some(
-    if (isSnapshot.value)
-      Opts.resolver.sonatypeSnapshots
-    else
-      Opts.resolver.sonatypeStaging
-  ),
-  licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT")),
-  homepage := Some(
-    url("https://github.com/takayahilton/sql-formatter")
-  ),
-  scmInfo := Some(
-    ScmInfo(
-      url("https://github.com/takayahilton/sql-formatter"),
-      "scm:git@github.com:takayahilton/sql-formatter.git"
-    )
-  ),
-  developers := List(
-    Developer(
-      id = "takayahilton",
-      name = "Tanaka Takaya",
-      email = "takayahilton@gmail.com",
-      url = url("https://github.com/takayahilton")
-    )
-  )
-) ++ sharedReleaseProcess
-
-lazy val sharedReleaseProcess = Seq(
-  releaseProcess := Seq[ReleaseStep](
-    checkSnapshotDependencies,
-    inquireVersions,
-    runClean,
-    releaseStepCommandAndRemaining("check"),
-    runTest,
-    setReleaseVersion,
-    commitReleaseVersion,
-    tagRelease,
-    releaseStepCommandAndRemaining("+publishSigned"),
-    setNextVersion,
-    commitNextVersion,
-    releaseStepCommand("sonatypeReleaseAll"),
-    pushChanges
-  )
-)
-
-lazy val noPublishSettings = Seq(
-  publish         := {},
-  publishLocal    := {},
-  publishArtifact := false
-)
-
-addCommandAlias("check", ";scalafmtCheckAll;scalafmtSbtCheck")
-addCommandAlias("fmt", ";scalafmtAll;scalafmtSbt")
+compileJs := Def.sequential(
+  fullOptJS in Compile,
+  copyJsMapIndex,
+  copyJsIndex
+).value
