@@ -60,13 +60,26 @@ lazy val commonScalacOptions = Def.setting {
   }
 }
 
+wartremoverErrors in (Compile, compile) ++= Seq(
+  Wart.ArrayEquals,
+  Wart.AnyVal,
+  Wart.DefaultArguments,
+  Wart.Enumeration,
+  Wart.ExplicitImplicitTypes,
+  Wart.FinalCaseClass,
+  Wart.FinalVal,
+  Wart.LeakingSealed,
+  Wart.NonUnitStatements,
+  Wart.Serializable,
+  Wart.TraversableOps
+)
+
 lazy val sharedSettings = Seq(
   scalacOptions ++= commonScalacOptions.value,
-  (scalacOptions in Test) ~= (_.filterNot(_ == "-Xfatal-warnings")),
   libraryDependencies ++= Seq(
     "org.scalatest" %%% "scalatest" % "3.1.1" % Test
   )
-)
+) ++ Seq(Compile, Test).map(scalacOptions in (_, console) -= "-Xfatal-warnings")
 
 lazy val publishingSettings = Seq(
   name                    := "sql-formatter",
