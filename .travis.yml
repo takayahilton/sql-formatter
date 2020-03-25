@@ -1,0 +1,19 @@
+
+scala:
+  - 2.11.12
+  - 2.12.11
+  - 2.13.1
+
+language: scala
+script: >
+  sbt ++$TRAVIS_SCALA_VERSION check test
+
+jdk:
+  - openjdk8
+  - openjdk11
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+    - $HOME/.coursier
