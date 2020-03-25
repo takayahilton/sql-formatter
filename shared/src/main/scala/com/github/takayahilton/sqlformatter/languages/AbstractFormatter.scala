@@ -2,6 +2,7 @@ package com.github.takayahilton.sqlformatter.languages
 
 import com.github.takayahilton.sqlformatter.core.{DialectConfig, FormatConfig, Formatter, Params, Tokenizer}
 import FormatConfig.DEFAULT_INDENT
+import com.github.takayahilton.sqlformatter.SqlParamable
 
 abstract class AbstractFormatter {
   def dialectConfig: DialectConfig
@@ -18,22 +19,22 @@ abstract class AbstractFormatter {
     new Formatter(cfg, tokenizer).format(query)
   }
 
-  def format(query: String, indent: String, params: Seq[_]): String =
+  def format[A](query: String, indent: String, params: Seq[A])(implicit ev: SqlParamable[A]): String =
     format(
       query,
-      FormatConfig(indent = indent, params = Params.IndexedParams(params))
+      FormatConfig(indent = indent, params = Params.IndexedParams(params.map(ev(_))))
     )
 
-  def format(query: String, params: Seq[_]): String =
+  def format[A: SqlParamable](query: String, params: Seq[A]): String =
     format(query, DEFAULT_INDENT, params)
 
-  def format(query: String, indent: String, params: Map[String, _]): String =
+  def format[A](query: String, indent: String, params: Map[String, A])(implicit ev: SqlParamable[A]): String =
     format(
       query,
-      FormatConfig(indent = indent, params = Params.NamedParams(params))
+      FormatConfig(indent = indent, params = Params.NamedParams(params.mapValues(ev(_)).toMap))
     )
 
-  def format(query: String, params: Map[String, _]): String =
+  def format[A: SqlParamable](query: String, params: Map[String, A]): String =
     format(query, DEFAULT_INDENT, params)
 
   def format(query: String, indent: String): String =

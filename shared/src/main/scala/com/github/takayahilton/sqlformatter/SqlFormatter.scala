@@ -16,16 +16,16 @@ object SqlFormatter {
   def format(query: String, cfg: FormatConfig): String =
     standard.format(query, cfg)
 
-  def format(query: String, indent: String, params: Seq[_]): String =
+  def format[A: SqlParamable](query: String, indent: String, params: Seq[A]): String =
     standard.format(query, indent, params)
 
-  def format(query: String, params: Seq[_]): String =
+  def format[A: SqlParamable](query: String, params: Seq[A]): String =
     standard.format(query, params)
 
-  def format(query: String, indent: String, params: Map[String, _]): String =
+  def format[A: SqlParamable](query: String, indent: String, params: Map[String, A]): String =
     standard.format(query, indent, params)
 
-  def format(query: String, params: Map[String, _]): String =
+  def format[A: SqlParamable](query: String, params: Map[String, A]): String =
     standard.format(query, params)
 
   def format(query: String, indent: String): String =

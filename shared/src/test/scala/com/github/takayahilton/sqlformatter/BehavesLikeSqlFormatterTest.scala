@@ -22,9 +22,9 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
   }
 
   protected def format(query: String) = SqlFormatter.of(language).format(query)
-  protected def format(query: String, params: Map[String, _]): String =
+  protected def format[A: SqlParamable](query: String, params: Map[String, A]): String =
     SqlFormatter.of(language).format(query, params)
-  protected def format(query: String, params: List[_]): String =
+  protected def format[A: SqlParamable](query: String, params: List[A]): String =
     SqlFormatter.of(language).format(query, params)
 
   test("formats simple SET SCHEMA queries") {
