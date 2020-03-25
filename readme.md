@@ -8,6 +8,7 @@ Scala port of great SQL formatter <https://github.com/zeroturnaround/sql-formatt
 
 Written with only Scala Standard Library, without dependencies.
 
+[Demo](https://takayahilton.github.io/sql-formatter/)
 
 ## Usage
 
