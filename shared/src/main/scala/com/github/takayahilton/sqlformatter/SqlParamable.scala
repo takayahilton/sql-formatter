@@ -9,7 +9,8 @@ object SqlParamable {
     def apply(a: String): String = a
   }
 
-  implicit def numericSqlParamable[A: Numeric]: SqlParamable[A] = new SqlParamable[A] {
-    def apply(a: A): String = a.toString
-  }
+  implicit def numericSqlParamable[A: Numeric]: SqlParamable[A] =
+    new SqlParamable[A] {
+      def apply(a: A): String = a.toString
+    }
 }

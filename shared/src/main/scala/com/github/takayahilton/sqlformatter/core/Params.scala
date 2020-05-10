@@ -19,12 +19,13 @@ object Params {
   }
   case class IndexedParams(_params: Seq[String]) extends Params {
     private[this] var params = _params
-    def get(token: Token): String = params match {
-      case Nil => token.value
-      case head +: tail =>
-        params = tail
-        head
-    }
+    def get(token: Token): String =
+      params match {
+        case Nil => token.value
+        case head +: tail =>
+          params = tail
+          head
+      }
   }
 
   case object EmptyParams extends Params {

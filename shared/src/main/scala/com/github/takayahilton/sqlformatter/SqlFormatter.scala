@@ -35,14 +35,15 @@ object SqlFormatter {
 
   def standard: AbstractFormatter = of(SqlDialect.StandardSQL)
 
-  def of(sqlDialect: SqlDialect): AbstractFormatter = sqlDialect match {
-    case SqlDialect.DB2 =>
-      new Db2Formatter
-    case SqlDialect.CouchbaseN1QL =>
-      new N1qlFormatter
-    case SqlDialect.PLSQL =>
-      new PlSqlFormatter
-    case SqlDialect.StandardSQL =>
-      new StandardSqlFormatter
-  }
+  def of(sqlDialect: SqlDialect): AbstractFormatter =
+    sqlDialect match {
+      case SqlDialect.DB2 =>
+        new Db2Formatter
+      case SqlDialect.CouchbaseN1QL =>
+        new N1qlFormatter
+      case SqlDialect.PLSQL =>
+        new PlSqlFormatter
+      case SqlDialect.StandardSQL =>
+        new StandardSqlFormatter
+    }
 }
