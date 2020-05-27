@@ -55,7 +55,7 @@ abstract class AbstractFormatter {
 
   def format[A: SqlParamable](query: String, params: Map[String, A]): String =
     format(query, DEFAULT_INDENT, params)
-  
+
   def formatUnsafe[A](query: String, params: Map[String, A]): String =
     formatUnsafe(query, DEFAULT_INDENT, params)
 

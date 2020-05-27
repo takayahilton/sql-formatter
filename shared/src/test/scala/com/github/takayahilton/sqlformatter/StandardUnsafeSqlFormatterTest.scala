@@ -4,14 +4,14 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
 
   test("formats short CREATE TABLE") {
     assert(
-      SqlFormatter.format("CREATE TABLE items (a INT PRIMARY KEY, b TEXT);") ==
+      UnsafeSqlFormatter.format("CREATE TABLE items (a INT PRIMARY KEY, b TEXT);") ==
         "CREATE TABLE items (a INT PRIMARY KEY, b TEXT);"
     )
   }
 
   test("formats long CREATE TABLE") {
     assert(
-      SqlFormatter.format(
+      UnsafeSqlFormatter.format(
         "CREATE TABLE items (a INT PRIMARY KEY, b TEXT, c INT NOT NULL, d INT NOT NULL);"
       ) ==
         """|CREATE TABLE items (
@@ -24,7 +24,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats INSERT without INTO") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "INSERT Customers (ID, MoneyBalance, Address, City) VALUES (12,-123.4, 'Skagen 2111','Stv');"
     )
     assert(
@@ -37,7 +37,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats ALTER TABLE ... MODIFY query") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "ALTER TABLE supplier MODIFY supplier_name char(100) NOT NULL;"
     )
     assert(
@@ -50,7 +50,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats ALTER TABLE ... ALTER COLUMN query") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "ALTER TABLE supplier ALTER COLUMN supplier_name VARCHAR(100) NOT NULL;"
     )
     assert(
@@ -63,12 +63,12 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("recognizes [] strings") {
-    assert(SqlFormatter.format("[foo JOIN bar]") == "[foo JOIN bar]")
-    assert(SqlFormatter.format("[foo ]] JOIN bar]") == "[foo ]] JOIN bar]")
+    assert(UnsafeSqlFormatter.format("[foo JOIN bar]") == "[foo JOIN bar]")
+    assert(UnsafeSqlFormatter.format("[foo ]] JOIN bar]") == "[foo ]] JOIN bar]")
   }
 
   test("recognizes @variables") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT @variable, @a1_2.3$, @'var name', @\"var name\", @`var name`, @[var name];"
     )
     assert(
@@ -84,7 +84,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("replaces @variables with param values") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT @variable, @a1_2.3$, @'var name', @\"var name\", @`var name`, @[var name], @'var\\name';",
       Map(
         "variable" -> "\"variable value\"",
@@ -107,7 +107,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("recognizes :variables") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT :variable, :a1_2.3$, :'var name', :\"var name\", :`var name`, :[var name];"
     )
     assert(
@@ -123,7 +123,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("replaces :variables with param values") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT :variable, :a1_2.3$, :'var name', :\"var name\", :`var name`," +
         " :[var name], :'escaped \\'var\\'', :\"^*& weird \\\" var   \";",
       Map(
@@ -149,7 +149,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("recognizes ?[0-9]* placeholders") {
-    val result = SqlFormatter.format("SELECT ?1, ?25, ?;");
+    val result = UnsafeSqlFormatter.format("SELECT ?1, ?25, ?;");
     assert(
       result ==
         """|SELECT
@@ -160,7 +160,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("replaces ? numbered placeholders with param values") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT ?1, ?2, ?0;",
       Map(
         "0" -> "first",
@@ -178,7 +178,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("replaces ? indexed placeholders with param values") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT ?, ?, ?;",
       List("first", "second", "third")
     )
@@ -192,7 +192,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats query with GO batch separator") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT 1 GO SELECT 2",
       List("first", "second", "third")
     )
@@ -208,7 +208,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
 
   test("formats SELECT query with CROSS JOIN") {
     val result =
-      SqlFormatter.format("SELECT a, b FROM t CROSS JOIN t2 on t.id = t2.id_t");
+      UnsafeSqlFormatter.format("SELECT a, b FROM t CROSS JOIN t2 on t.id = t2.id_t");
     assert(
       result ==
         """|SELECT
@@ -221,7 +221,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats SELECT query with CROSS APPLY") {
-    val result = SqlFormatter.format("SELECT a, b FROM t CROSS APPLY fn(t.id)");
+    val result = UnsafeSqlFormatter.format("SELECT a, b FROM t CROSS APPLY fn(t.id)");
     assert(
       result ==
         """|SELECT
@@ -234,7 +234,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats simple SELECT") {
-    val result = SqlFormatter.format("SELECT N, M FROM t");
+    val result = UnsafeSqlFormatter.format("SELECT N, M FROM t");
     assert(
       result ==
         """|SELECT
@@ -246,7 +246,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats simple SELECT with national characters (MSSQL)") {
-    val result = SqlFormatter.format("SELECT N'value'");
+    val result = UnsafeSqlFormatter.format("SELECT N'value'");
     assert(
       result ==
         """|SELECT
@@ -255,7 +255,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats SELECT query with OUTER APPLY") {
-    val result = SqlFormatter.format("SELECT a, b FROM t OUTER APPLY fn(t.id)");
+    val result = UnsafeSqlFormatter.format("SELECT a, b FROM t OUTER APPLY fn(t.id)");
     assert(
       result ==
         """|SELECT
@@ -268,7 +268,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats FETCH FIRST like LIMIT") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT * FETCH FIRST 2 ROWS ONLY;"
     )
     assert(
@@ -281,7 +281,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats CASE ... WHEN with a blank expression") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "CASE WHEN option = 'foo' THEN 1 WHEN option = 'bar' THEN 2 WHEN option = 'baz' THEN 3 ELSE 4 END;"
     )
 
@@ -297,7 +297,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats CASE ... WHEN inside SELECT") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT foo, bar, CASE baz WHEN 'one' THEN 1 WHEN 'two' THEN 2 ELSE 3 END FROM table"
     )
 
@@ -318,7 +318,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats CASE ... WHEN with an expression") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "CASE toString(getNumber()) WHEN 'one' THEN 1 WHEN 'two' THEN 2 WHEN 'three' THEN 3 ELSE 4 END;"
     )
 
@@ -335,7 +335,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("recognizes lowercase CASE ... END") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "case when option = 'foo' then 1 else 2 end;"
     )
 
@@ -350,7 +350,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
 
   // Regression test for issue #43
   test("ignores words CASE and END inside other strings") {
-    val result = SqlFormatter.format(
+    val result = UnsafeSqlFormatter.format(
       "SELECT CASEDATE, ENDDATE FROM table1;"
     )
 
@@ -366,7 +366,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
 
   test("formats tricky line comments") {
     assert(
-      SqlFormatter.format("SELECT a#comment, here\nFROM b--comment") ==
+      UnsafeSqlFormatter.format("SELECT a#comment, here\nFROM b--comment") ==
         """|SELECT
            |  a #comment, here
            |FROM
@@ -376,7 +376,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
 
   test("formats line comments followed by semicolon") {
     assert(
-      SqlFormatter.format("SELECT a FROM b\n--comment\n;") ==
+      UnsafeSqlFormatter.format("SELECT a FROM b\n--comment\n;") ==
         """|SELECT
            |  a
            |FROM
@@ -387,7 +387,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
 
   test("formats line comments followed by comma") {
     assert(
-      SqlFormatter.format("SELECT a --comment\n, b") ==
+      UnsafeSqlFormatter.format("SELECT a --comment\n, b") ==
         """|SELECT
            |  a --comment
            |,
@@ -397,7 +397,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
 
   test("formats line comments followed by close-paren") {
     assert(
-      SqlFormatter.format("SELECT ( a --comment\n )") ==
+      UnsafeSqlFormatter.format("SELECT ( a --comment\n )") ==
         """|SELECT
            |  (a --comment
            |)""".stripMargin
@@ -406,7 +406,7 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
 
   test("formats line comments followed by open-paren") {
     assert(
-      SqlFormatter.format("SELECT a --comment\n()") ==
+      UnsafeSqlFormatter.format("SELECT a --comment\n()") ==
         """|SELECT
            |  a --comment
            |  ()""".stripMargin
@@ -414,6 +414,6 @@ class StandardUnsafeSqlFormatterTest extends BehavesLikeSqlFormatterTest(SqlDial
   }
 
   test("formats lonely semicolon") {
-    assert(SqlFormatter.format(";") == ";")
+    assert(UnsafeSqlFormatter.format(";") == ";")
   }
 }
