@@ -12,10 +12,10 @@ lazy val root = project
   .settings(moduleName := "root")
   .settings(publishingSettings)
   .settings(noPublishSettings)
-  .aggregate(sql_formatterJVM, sql_formatterJS)
-  .dependsOn(sql_formatterJVM, sql_formatterJS)
+  .aggregate(sql_formatterJVM, sql_formatterJS, sql_formatterNative)
+  .dependsOn(sql_formatterJVM, sql_formatterJS, sql_formatterNative)
 
-lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform)
+lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .in(file("."))
   .settings(
@@ -23,13 +23,25 @@ lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform)
     sharedSettings,
     publishingSettings
   )
+  .jvmSettings(
+    scalacOptions ++= commonScalacOptions.value
+  )
   .jsSettings(
+    scalacOptions ++= commonScalacOptions.value,
     //scalac-scoverage-plugin Scala.js 1.0 is not yet released.
     coverageEnabled := false
+  )
+  in(
+    scalaVersion := "2.11.12",
+    crossScalaVersions := Seq("2.11.12"),
+    Test / nativeLinkStubs := true,
+    Compile / doc / scalacOptions -= "-Xfatal-warnings"
   )
 
 lazy val sql_formatterJVM = sql_formatter.jvm
 lazy val sql_formatterJS = sql_formatter.js
+lazy val sql_formatterNative = sql_formatter.native
+
 
 lazy val commonScalacOptions = Def.setting {
   Seq(
@@ -51,7 +63,7 @@ lazy val commonScalacOptions = Def.setting {
         )
       case _ =>
         Seq(
-          "-Xfatal-warnings",
+          "-Xfatal-warnings", // doesn't work with SN, so removed in .nativeSettings (see: https://github.com/scala-native/scala-native/pull/1752)
           "-Yno-adapted-args",
           "-Ypartial-unification",
           "-Xfuture"
@@ -75,7 +87,6 @@ wartremoverErrors in (Compile, compile) ++= Seq(
 )
 
 lazy val sharedSettings = Seq(
-  scalacOptions ++= commonScalacOptions.value,
   libraryDependencies ++= Seq(
     "org.scalatest" %%% "scalatest" % "3.1.2" % Test
   )
