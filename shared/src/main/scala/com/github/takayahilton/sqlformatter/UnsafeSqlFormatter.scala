@@ -17,16 +17,16 @@ object UnsafeSqlFormatter {
     standard.format(query, cfg)
 
   def format[A](query: String, indent: String, params: Seq[A]): String =
-    standard.format(query, indent, params)
+    standard.formatUnsafe(query, indent, params)
 
   def format[A](query: String, params: Seq[A]): String =
-    standard.format(query, params)
+    standard.formatUnsafe(query, params)
 
   def format[A](query: String, indent: String, params: Map[String, A]): String =
-    standard.format(query, indent, params)
+    standard.formatUnsafe(query, indent, params)
 
   def format[A](query: String, params: Map[String, A]): String =
-    standard.format(query, params)
+    standard.formatUnsafe(query, params)
 
   def format(query: String, indent: String): String =
     standard.format(query, indent)
