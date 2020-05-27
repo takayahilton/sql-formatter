@@ -31,7 +31,7 @@ lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     //scalac-scoverage-plugin Scala.js 1.0 is not yet released.
     coverageEnabled := false
   )
-  in(
+  .nativeSettings(
     scalaVersion := "2.11.12",
     crossScalaVersions := Seq("2.11.12"),
     Test / nativeLinkStubs := true,
