@@ -25,7 +25,7 @@ abstract class AbstractFormatter {
       FormatConfig(indent = indent, params = Params.IndexedParams(params.map(ev(_))))
     )
 
-  def formatUnsafe[A](query: String, indent: String, params: Seq[A]): String = {
+  def formatUnsafe(query: String, indent: String, params: Seq[Any]): String = {
     val strParams = params.map(_.toString)
     format(
       query,
@@ -36,7 +36,7 @@ abstract class AbstractFormatter {
   def format[A: SqlParamable](query: String, params: Seq[A]): String =
     format(query, DEFAULT_INDENT, params)
 
-  def formatUnsafe[A](query: String, params: Seq[A]): String =
+  def formatUnsafe(query: String, params: Seq[Any]): String =
     formatUnsafe(query, DEFAULT_INDENT, params)
 
   def format[A](query: String, indent: String, params: Map[String, A])(implicit ev: SqlParamable[A]): String =
@@ -45,7 +45,7 @@ abstract class AbstractFormatter {
       FormatConfig(indent = indent, params = Params.NamedParams(params.mapValues(ev(_))))
     )
 
-  def formatUnsafe[A](query: String, indent: String, params: Map[String, A]): String = {
+  def formatUnsafe(query: String, indent: String, params: Map[String, Any]): String = {
     val strParams = params.mapValues(_.toString)
     format(
       query,
@@ -56,7 +56,7 @@ abstract class AbstractFormatter {
   def format[A: SqlParamable](query: String, params: Map[String, A]): String =
     format(query, DEFAULT_INDENT, params)
 
-  def formatUnsafe[A](query: String, params: Map[String, A]): String =
+  def formatUnsafe(query: String, params: Map[String, Any]): String =
     formatUnsafe(query, DEFAULT_INDENT, params)
 
   def format(query: String, indent: String): String =
