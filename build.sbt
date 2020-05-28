@@ -1,19 +1,9 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 import ReleaseTransformations._
 
-scalaVersion in ThisBuild       := "2.12.11"
-crossScalaVersions in ThisBuild := Seq("2.11.12", scalaVersion.value, "2.13.2")
-organization in ThisBuild       := "com.github.takayahilton"
+organization in ThisBuild := "com.github.takayahilton"
 
 onChangedBuildSource in Global := ReloadOnSourceChanges
-
-lazy val root = project
-  .in(file("."))
-  .settings(moduleName := "root")
-  .settings(publishingSettings)
-  .settings(noPublishSettings)
-  .aggregate(sql_formatterJVM, sql_formatterJS, sql_formatterNative)
-  .dependsOn(sql_formatterJVM, sql_formatterJS, sql_formatterNative)
 
 lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
@@ -24,9 +14,13 @@ lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     publishingSettings
   )
   .jvmSettings(
+    scalaVersion       := "2.12.11",
+    crossScalaVersions := Seq("2.11.12", scalaVersion.value, "2.13.2"),
     scalacOptions ++= commonScalacOptions.value
   )
   .jsSettings(
+    scalaVersion       := "2.12.11",
+    crossScalaVersions := Seq("2.11.12", scalaVersion.value, "2.13.2"),
     scalacOptions ++= commonScalacOptions.value,
     //scalac-scoverage-plugin Scala.js 1.0 is not yet released.
     coverageEnabled := false
