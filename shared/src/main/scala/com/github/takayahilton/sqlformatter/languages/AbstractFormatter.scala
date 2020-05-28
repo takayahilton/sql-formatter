@@ -42,7 +42,7 @@ abstract class AbstractFormatter {
   def format[A](query: String, indent: String, params: Map[String, A])(implicit ev: SqlParamable[A]): String =
     format(
       query,
-      FormatConfig(indent = indent, params = Params.NamedParams(params.mapValues(ev(_))))
+      FormatConfig(indent = indent, params = Params.NamedParams(params.mapValues(ev(_)).toMap))
     )
 
   def formatUnsafe(query: String, indent: String, params: Map[String, Any]): String = {
