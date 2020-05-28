@@ -46,7 +46,7 @@ abstract class AbstractFormatter {
     )
 
   def formatUnsafe(query: String, indent: String, params: Map[String, Any]): String = {
-    val strParams = params.mapValues(_.toString)
+    val strParams = params.mapValues(_.toString).toMap
     format(
       query,
       FormatConfig(indent = indent, params = Params.NamedParams(strParams))
