@@ -34,6 +34,7 @@ lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .nativeSettings(
     scalaVersion           := "2.11.12",
     crossScalaVersions     := Seq("2.11.12"),
+    coverageEnabled := false,
     Test / nativeLinkStubs := true,
     Compile / doc / scalacOptions -= "-Xfatal-warnings"
   )
