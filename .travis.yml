@@ -6,7 +6,15 @@ scala:
 
 language: scala
 script: >
-  sbt ++$TRAVIS_SCALA_VERSION check coverage test sql_formatterJVM/coverageReport
+  sbt ++$TRAVIS_SCALA_VERSION check coverage sql_formatterJVM/test sql_formatterJVM/coverageReport sql_formatterJS/test
+
+matrix:
+  include:
+    - scala: 2.11.12
+      before_script:
+        - curl https://raw.githubusercontent.com/scala-native/scala-native/master/scripts/travis_setup.sh | bash -x
+      sudo: required
+      script: sbt ++$TRAVIS_SCALA_VERSION! sql_formatterNative/test
 
 jdk:
   - openjdk8
