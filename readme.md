@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/takayahilton/sql-formatter.png?branch=master)](https://travis-ci.org/takayahilton/sql-formatter)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.takayahilton/sql-formatter_2.12.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.takayahilton%22%20AND%20a:%22sql-formatter_2.12%22)
 [![codecov.io](http://codecov.io/github/takayahilton/sql-formatter/coverage.svg?branch=master)](https://codecov.io/gh/takayahilton/sql-formatter/branch/master)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0.svg)]()
 
 Scala port of great SQL formatter <https://github.com/zeroturnaround/sql-formatter>, <https://github.com/vertical-blank/sql-formatter>.
 
@@ -15,13 +16,20 @@ Written with only Scala Standard Library, without dependencies.
 ### Scala (on JVM)
 
 ```sbt
-libraryDependencies += "com.github.takayahilton" %% "sql-formatter" % "1.0.0"
+libraryDependencies += "com.github.takayahilton" %% "sql-formatter" % "1.1.0"
 ```
 
 ### Scala.js
 
 ```sbt
-libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.0.0"
+libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.1.0"
+```
+
+
+### Scala Native
+
+```sbt
+libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.1.0"
 ```
 
 ### Examples
