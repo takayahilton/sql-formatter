@@ -1,11 +1,11 @@
 enablePlugins(ScalaJSPlugin)
 
 name := "sql-formatter demo"
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.2"
 
 libraryDependencies ++= Seq(
   "org.scala-js" %%% "scalajs-dom" % "1.0.0",
-  "com.github.takayahilton" %%% "sql-formatter" % "1.0.0"
+  "com.github.takayahilton" %%% "sql-formatter" % "1.1.0"
 )
 
 scalaJSUseMainModuleInitializer := true
