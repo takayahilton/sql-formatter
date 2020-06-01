@@ -1,8 +1,10 @@
-
 scala:
   - 2.11.12
   - 2.12.11
   - 2.13.2
+
+jdk:
+  - openjdk8
 
 language: scala
 script: >
@@ -15,10 +17,18 @@ matrix:
         - curl https://raw.githubusercontent.com/scala-native/scala-native/master/scripts/travis_setup.sh | bash -x
       sudo: required
       script: sbt ++$TRAVIS_SCALA_VERSION check sql_formatterNative/test
-
-jdk:
-  - openjdk8
-  - openjdk11
+    - scala: [2.11.12]
+      env:
+        - SCALAJS_VERSION=0.6.33
+      script: sbt ++$TRAVIS_SCALA_VERSION check sql_formatterJS/test
+    - scala: [2.12.11]
+      env:
+        - SCALAJS_VERSION=0.6.33
+      script: sbt ++$TRAVIS_SCALA_VERSION check sql_formatterJS/test
+    - scala: [2.13.2]
+      env:
+        - SCALAJS_VERSION=0.6.33
+      script: sbt ++$TRAVIS_SCALA_VERSION check sql_formatterJS/test
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
