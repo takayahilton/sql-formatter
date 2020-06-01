@@ -5,29 +5,36 @@ organization in ThisBuild := "com.github.takayahilton"
 
 onChangedBuildSource in Global := ReloadOnSourceChanges
 
+val Scala211 = "2.11.12"
+val Scala212 = "2.12.11"
+val Scala213 = "2.13.2"
+
+lazy val root = project
+  .in(file("."))
+  .settings(moduleName := "root")
+  .settings(publishingSettings)
+  .settings(noPublishSettings)
+  .aggregate(sql_formatterJVM, sql_formatterJS)
+  .dependsOn(sql_formatterJVM, sql_formatterJS)
+
 lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .in(file("."))
   .settings(
     moduleName := "sql-formatter",
     sharedSettings,
-    publishingSettings
-  )
-  .jvmSettings(
-    scalaVersion       := "2.12.11",
-    crossScalaVersions := Seq("2.11.12", scalaVersion.value, "2.13.2"),
-    scalacOptions ++= commonScalacOptions.value
+    publishingSettings,
+    scalacOptions ++= commonScalacOptions.value,
+    scalaVersion       := Scala211,
+    crossScalaVersions := Seq(Scala211, Scala212, Scala213)
   )
   .jsSettings(
-    scalaVersion       := "2.12.11",
-    crossScalaVersions := Seq("2.11.12", scalaVersion.value, "2.13.2"),
-    scalacOptions ++= commonScalacOptions.value,
     //scalac-scoverage-plugin Scala.js 1.0 is not yet released.
     coverageEnabled := false
   )
   .nativeSettings(
-    scalaVersion           := "2.11.12",
-    crossScalaVersions     := Seq("2.11.12"),
+    scalaVersion           := Scala211,
+    crossScalaVersions     := Seq(Scala211),
     coverageEnabled        := false,
     Test / nativeLinkStubs := true,
     Compile / doc / scalacOptions -= "-Xfatal-warnings"
@@ -119,6 +126,7 @@ lazy val publishingSettings = Seq(
 ) ++ sharedReleaseProcess
 
 lazy val sharedReleaseProcess = Seq(
+  releaseCrossBuild := true,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
@@ -128,7 +136,8 @@ lazy val sharedReleaseProcess = Seq(
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    releaseStepCommandAndRemaining("+publishSigned"),
+    publishArtifacts,
+    releaseStepCommandAndRemaining(s";++${Scala211}!;sql_formatterNative/publish"),
     setNextVersion,
     commitNextVersion,
     releaseStepCommand("sonatypeReleaseAll"),

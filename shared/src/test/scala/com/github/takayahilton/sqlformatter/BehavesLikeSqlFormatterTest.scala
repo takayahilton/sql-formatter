@@ -21,11 +21,19 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
     );
   }
 
-  protected def format(query: String) = SqlFormatter.of(language).format(query)
-  protected def format[A: SqlParamable](query: String, params: Map[String, A]): String =
-    SqlFormatter.of(language).format(query, params)
-  protected def format[A: SqlParamable](query: String, params: List[A]): String =
-    SqlFormatter.of(language).format(query, params)
+  protected def format(query: String): String = SqlFormatter.of(language).format(query)
+  protected def format[A: SqlParamable](query: String, params: Map[String, A]): String = {
+    val str1 = SqlFormatter.of(language).format(query, params)
+    val str2 = SqlFormatter.of(language).formatUnsafe(query, params)
+    assert(str1 === str2)
+    str1
+  }
+  protected def format[A: SqlParamable](query: String, params: Seq[A]): String = {
+    val str1 = SqlFormatter.of(language).format(query, params)
+    val str2 = SqlFormatter.of(language).formatUnsafe(query, params)
+    assert(str1 === str2)
+    str1
+  }
 
   test("formats simple SET SCHEMA queries") {
     val result = format("SET SCHEMA tetrisdb; SET CURRENT SCHEMA bingodb;");
