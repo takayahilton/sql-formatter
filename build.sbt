@@ -15,7 +15,6 @@ lazy val root = project
   .settings(publishingSettings)
   .settings(noPublishSettings)
   .aggregate(sql_formatterJVM, sql_formatterJS)
-  .dependsOn(sql_formatterJVM, sql_formatterJS)
 
 lazy val sql_formatter = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Full)
