@@ -126,7 +126,6 @@ lazy val publishingSettings = Seq(
 ) ++ sharedReleaseProcess
 
 lazy val sharedReleaseProcess = Seq(
-  releaseCrossBuild := true,
   releaseProcess := Seq[ReleaseStep](
     checkSnapshotDependencies,
     inquireVersions,
@@ -136,8 +135,8 @@ lazy val sharedReleaseProcess = Seq(
     setReleaseVersion,
     commitReleaseVersion,
     tagRelease,
-    publishArtifacts,
-    releaseStepCommandAndRemaining(s";++${Scala211}!;sql_formatterNative/publish"),
+    releaseStepCommandAndRemaining("+publishSigned"),
+    releaseStepCommandAndRemaining(s";++${Scala211}!;sql_formatterNative/publishSigned"),
     setNextVersion,
     commitNextVersion,
     releaseStepCommand("sonatypeReleaseAll"),
