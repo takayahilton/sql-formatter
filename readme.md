@@ -17,20 +17,20 @@ Written with only Scala Standard Library, without dependencies.
 ### Scala (on JVM)
 
 ```sbt
-libraryDependencies += "com.github.takayahilton" %% "sql-formatter" % "1.2.0"
+libraryDependencies += "com.github.takayahilton" %% "sql-formatter" % "1.2.1"
 ```
 
 ### Scala.js
 
 ```sbt
-libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.2.0"
+libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.2.1"
 ```
 
 
 ### Scala Native
 
 ```sbt
-libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.2.0"
+libraryDependencies += "com.github.takayahilton" %%% "sql-formatter" % "1.2.1"
 ```
 
 ### Examples
