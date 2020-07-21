@@ -18,7 +18,7 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |    Column1
            |FROM
            |    Table1;""".stripMargin
-    );
+    )
   }
 
   protected def format(query: String): String = SqlFormatter.of(language).format(query)
@@ -36,18 +36,18 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
   }
 
   test("formats simple SET SCHEMA queries") {
-    val result = format("SET SCHEMA tetrisdb; SET CURRENT SCHEMA bingodb;");
+    val result = format("SET SCHEMA tetrisdb; SET CURRENT SCHEMA bingodb;")
     assert(
       result ==
         """|SET SCHEMA
            |  tetrisdb;
            |SET CURRENT SCHEMA
            |  bingodb;""".stripMargin
-    );
+    )
   }
 
   test("formats simple SELECT query") {
-    val result = format("SELECT count(*),Column1 FROM Table1;");
+    val result = format("SELECT count(*),Column1 FROM Table1;")
     assert(
       result ==
         """|SELECT
@@ -55,13 +55,13 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |  Column1
            |FROM
            |  Table1;""".stripMargin
-    );
+    )
   }
 
   test("formats complex SELECT") {
     val result = format(
       "SELECT DISTINCT name, ROUND(age/7) field1, 18 + 20 AS field2, 'some string' FROM foo;"
-    );
+    )
     assert(
       result ==
         """|SELECT
@@ -71,14 +71,14 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |  'some string'
            |FROM
            |  foo;""".stripMargin
-    );
+    )
   }
 
   test("formats SELECT with complex WHERE") {
     val result = SqlFormatter.format(
       "SELECT * FROM foo WHERE Column1 = 'testing'" +
-        "AND ( (Column2 = Column3 OR Column4 >= NOW()) );"
-    );
+        "AND ( (Column2 = Column3 OR Column4 >= NOW()) )"
+    )
     assert(
       result ==
         """|SELECT
@@ -92,15 +92,15 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |      Column2 = Column3
            |      OR Column4 >= NOW()
            |    )
-           |  );""".stripMargin
-    );
+           |  )""".stripMargin
+    )
   }
 
   test("formats SELECT with toplevel reserved words") {
     val result = format(
       "SELECT * FROM foo WHERE name = 'John' GROUP BY some_column " +
         "HAVING column > 10 ORDER BY other_column LIMIT 5;"
-    );
+    )
     assert(
       result ==
         """|SELECT
@@ -117,24 +117,24 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |  other_column
            |LIMIT
            |  5;""".stripMargin
-    );
+    )
   }
 
   test("formats LIMIT with two comma-separated values on single line") {
     val result = format(
       "LIMIT 5, 10;"
-    );
+    )
     assert(
       result ==
         """|LIMIT
            |  5, 10;""".stripMargin
-    );
+    )
   }
 
   test("formats LIMIT of single value followed by another SELECT using commas") {
     val result = format(
       "LIMIT 5; SELECT foo, bar;"
-    );
+    )
     assert(
       result ==
         """|LIMIT
@@ -142,35 +142,35 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |SELECT
            |  foo,
            |  bar;""".stripMargin
-    );
+    )
   }
 
   test("formats LIMIT of single value and OFFSET") {
     val result = format(
       "LIMIT 5 OFFSET 8;"
-    );
+    )
     assert(
       result ==
         """|LIMIT
            |  5 OFFSET 8;""".stripMargin
-    );
+    )
   }
 
   test("recognizes LIMIT in lowercase") {
     val result = format(
       "limit 5, 10;"
-    );
+    )
     assert(
       result ==
         """|limit
            |  5, 10;""".stripMargin
-    );
+    )
   }
 
   test("preserves case of keywords") {
     val result = format(
       "select distinct * frOM foo left join bar WHERe a > 1 and b = 3"
-    );
+    )
     assert(
       result ==
         """|select
@@ -181,13 +181,13 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |WHERe
            |  a > 1
            |  and b = 3""".stripMargin
-    );
+    )
   }
 
   test("formats SELECT query with SELECT query inside it") {
     val result = format(
       "SELECT *, SUM(*) AS sum FROM (SELECT * FROM Posts LIMIT 30) WHERE a > b"
-    );
+    )
     assert(
       result ==
         """|SELECT
@@ -204,14 +204,14 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |  )
            |WHERE
            |  a > b""".stripMargin
-    );
+    )
   }
 
   test("formats SELECT query with INNER JOIN") {
     val result = format(
       "SELECT customer_id.from, COUNT(order_id) AS total FROM customers " +
         "INNER JOIN orders ON customers.customer_id = orders.customer_id;"
-    );
+    )
     assert(
       result ==
         """|SELECT
@@ -220,7 +220,7 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |FROM
            |  customers
            |  INNER JOIN orders ON customers.customer_id = orders.customer_id;""".stripMargin
-    );
+    )
   }
 
   test("formats SELECT query with different comments") {
@@ -233,7 +233,7 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
         "-- This is another comment\n" +
         "MyTable # One final comment\n" +
         "WHERE 1 = 2;"
-    );
+    )
     assert(
       result ==
         """|SELECT
@@ -246,38 +246,38 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |  MyTable # One final comment
            |WHERE
            |  1 = 2;""".stripMargin
-    );
+    )
   }
 
   test("formats simple INSERT query") {
     val result = format(
-      "INSERT INTO Customers (ID, MoneyBalance, Address, City) VALUES (12,-123.4, 'Skagen 2111','Stv');"
-    );
+      "INSERT INTO Customers (ID, MoneyBalance, Address, City) VALUES (12,-123.4, 'Skagen 2111','Stv')"
+    )
     assert(
       result ==
         """|INSERT INTO
            |  Customers (ID, MoneyBalance, Address, City)
            |VALUES
-           |  (12, -123.4, 'Skagen 2111', 'Stv');""".stripMargin
-    );
+           |  (12, -123.4, 'Skagen 2111', 'Stv')""".stripMargin
+    )
   }
 
   test("keeps short parenthized list with nested parenthesis on single line") {
     val result = format(
-      "SELECT (a + b * (c - NOW()));"
-    );
+      "SELECT (a + b * (c - NOW()))"
+    )
     assert(
       result ==
         """|SELECT
-           |  (a + b * (c - NOW()));""".stripMargin
-    );
+           |  (a + b * (c - NOW()))""".stripMargin
+    )
   }
 
   test("breaks long parenthized lists to multiple lines") {
     val result = format(
       "INSERT INTO some_table (id_product, id_shop, id_currency, id_country, id_registration) (" +
         "SELECT IF(dq.id_discounter_shopping = 2, dq.value, dq.value / 100)," +
-        "IF (dq.id_discounter_shopping = 2, 'amount', 'percentage') FROM foo);"
+        "IF (dq.id_discounter_shopping = 2, 'amount', 'percentage') FROM foo)"
     )
     assert(
       result ==
@@ -302,14 +302,14 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |      )
            |    FROM
            |      foo
-           |  );""".stripMargin
-    );
+           |  )""".stripMargin
+    )
   }
 
   test("formats simple UPDATE query") {
     val result = format(
       "UPDATE Customers SET ContactName='Alfred Schmidt', City='Hamburg' WHERE CustomerName='Alfreds Futterkiste';"
-    );
+    )
     assert(
       result ==
         """|UPDATE
@@ -325,7 +325,7 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
   test("formats simple DELETE query") {
     val result = format(
       "DELETE FROM Customers WHERE CustomerName='Alfred' AND Phone=5002132;"
-    );
+    )
     assert(
       result ==
         """|DELETE FROM
@@ -339,7 +339,7 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
   test("formats simple DROP query") {
     val result = format(
       "DROP TABLE IF EXISTS admin_role;"
-    );
+    )
     assert(
       result ==
         "DROP TABLE IF EXISTS admin_role;"
@@ -347,28 +347,28 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
   }
 
   test("formats uncomplete query") {
-    val result = format("SELECT count(");
+    val result = format("SELECT count(")
     assert(
       result ==
         """|SELECT
            |  count(""".stripMargin
-    );
+    )
   }
 
   test("formats query that ends with open comment") {
-    val result = format("SELECT count(*)\n/*Comment");
+    val result = format("SELECT count(*)\n/*Comment")
     assert(
       result ==
         """|SELECT
            |  count(*)
            |  /*Comment""".stripMargin
-    );
+    )
   }
 
   test("formats UPDATE query with AS part") {
     val result = format(
       "UPDATE customers SET totalorders = ordersummary.total  FROM ( SELECT * FROM bank) AS ordersummary"
-    );
+    )
     assert(
       result ==
         """|UPDATE
@@ -382,11 +382,11 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |    FROM
            |      bank
            |  ) AS ordersummary""".stripMargin
-    );
+    )
   }
 
   test("formats top-level and newline multi-word reserved words with inconsistent spacing") {
-    val result = format("SELECT * FROM foo LEFT \t OUTER  \n JOIN bar ORDER \n BY blah");
+    val result = format("SELECT * FROM foo LEFT \t OUTER  \n JOIN bar ORDER \n BY blah")
     assert(
       result ==
         """|SELECT
@@ -396,11 +396,11 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |  LEFT OUTER JOIN bar
            |ORDER BY
            |  blah""".stripMargin
-    );
+    )
   }
 
   test("formats long double parenthized queries to multiple lines") {
-    val result = format("((foo = '0123456789-0123456789-0123456789-0123456789'))");
+    val result = format("((foo = '0123456789-0123456789-0123456789-0123456789'))")
     assert(
       result ==
         """|(
@@ -408,85 +408,85 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |    foo = '0123456789-0123456789-0123456789-0123456789'
            |  )
            |)""".stripMargin
-    );
+    )
   }
 
   test("formats short double parenthized queries to one line") {
-    val result = format("((foo = 'bar'))");
-    assert(result == "((foo = 'bar'))");
+    val result = format("((foo = 'bar'))")
+    assert(result == "((foo = 'bar'))")
   }
 
   test("formats single-char operators") {
-    assert(format("foo = bar") == "foo = bar");
-    assert(format("foo < bar") == "foo < bar");
-    assert(format("foo > bar") == "foo > bar");
-    assert(format("foo + bar") == "foo + bar");
-    assert(format("foo - bar") == "foo - bar");
-    assert(format("foo * bar") == "foo * bar");
-    assert(format("foo / bar") == "foo / bar");
-    assert(format("foo % bar") == "foo % bar");
+    assert(format("foo = bar") == "foo = bar")
+    assert(format("foo < bar") == "foo < bar")
+    assert(format("foo > bar") == "foo > bar")
+    assert(format("foo + bar") == "foo + bar")
+    assert(format("foo - bar") == "foo - bar")
+    assert(format("foo * bar") == "foo * bar")
+    assert(format("foo / bar") == "foo / bar")
+    assert(format("foo % bar") == "foo % bar")
   }
 
   test("formats multi-char operators") {
-    assert(format("foo != bar") == "foo != bar");
-    assert(format("foo <> bar") == "foo <> bar");
-    assert(format("foo == bar") == "foo == bar"); // N1QL
-    assert(format("foo || bar") == "foo || bar"); // Oracle, Postgres, N1QL string concat
+    assert(format("foo != bar") == "foo != bar")
+    assert(format("foo <> bar") == "foo <> bar")
+    assert(format("foo == bar") == "foo == bar") // N1QL
+    assert(format("foo || bar") == "foo || bar") // Oracle, Postgres, N1QL string concat
 
-    assert(format("foo <= bar") == "foo <= bar");
-    assert(format("foo >= bar") == "foo >= bar");
+    assert(format("foo <= bar") == "foo <= bar")
+    assert(format("foo >= bar") == "foo >= bar")
 
-    assert(format("foo !< bar") == "foo !< bar");
-    assert(format("foo !> bar") == "foo !> bar");
+    assert(format("foo !< bar") == "foo !< bar")
+    assert(format("foo !> bar") == "foo !> bar")
   }
 
   test("formats logical operators") {
-    assert(format("foo ALL bar") == "foo ALL bar");
-    assert(format("foo = ANY (1, 2, 3)") == "foo = ANY (1, 2, 3)");
-    assert(format("EXISTS bar") == "EXISTS bar");
-    assert(format("foo IN (1, 2, 3)") == "foo IN (1, 2, 3)");
-    assert(format("foo LIKE 'hello%'") == "foo LIKE 'hello%'");
-    assert(format("foo IS NULL") == "foo IS NULL");
-    assert(format("UNIQUE foo") == "UNIQUE foo");
+    assert(format("foo ALL bar") == "foo ALL bar")
+    assert(format("foo = ANY (1, 2, 3)") == "foo = ANY (1, 2, 3)")
+    assert(format("EXISTS bar") == "EXISTS bar")
+    assert(format("foo IN (1, 2, 3)") == "foo IN (1, 2, 3)")
+    assert(format("foo LIKE 'hello%'") == "foo LIKE 'hello%'")
+    assert(format("foo IS NULL") == "foo IS NULL")
+    assert(format("UNIQUE foo") == "UNIQUE foo")
   }
 
   test("formats AND/OR operators") {
-    assert(format("foo BETWEEN bar AND baz") == "foo BETWEEN bar\nAND baz");
-    assert(format("foo AND bar") == "foo\nAND bar");
-    assert(format("foo OR bar") == "foo\nOR bar");
+    assert(format("foo BETWEEN bar AND baz") == "foo BETWEEN bar\nAND baz")
+    assert(format("foo AND bar") == "foo\nAND bar")
+    assert(format("foo OR bar") == "foo\nOR bar")
   }
 
   test("recognizes strings") {
-    assert(format("\"foo JOIN bar\"") == "\"foo JOIN bar\"");
-    assert(format("'foo JOIN bar'") == "'foo JOIN bar'");
-    assert(format("`foo JOIN bar`") == "`foo JOIN bar`");
+    assert(format("\"foo JOIN bar\"") == "\"foo JOIN bar\"")
+    assert(format("'foo JOIN bar'") == "'foo JOIN bar'")
+    assert(format("`foo JOIN bar`") == "`foo JOIN bar`")
   }
 
   test("recognizes escaped strings") {
-    assert(format("\"foo \\\" JOIN bar\"") == "\"foo \\\" JOIN bar\"");
-    assert(format("'foo \\' JOIN bar'") == "'foo \\' JOIN bar'");
-    assert(format("`foo `` JOIN bar`") == "`foo `` JOIN bar`");
+    assert(format("\"foo \\\" JOIN bar\"") == "\"foo \\\" JOIN bar\"")
+    assert(format("'foo \\' JOIN bar'") == "'foo \\' JOIN bar'")
+    assert(format("`foo `` JOIN bar`") == "`foo `` JOIN bar`")
   }
 
   test("formats postgres specific operators") {
-    assert(format("column::int") == "column :: int");
-    assert(format("v->2") == "v -> 2");
-    assert(format("v->>2") == "v ->> 2");
-    assert(format("foo ~~ 'hello'") == "foo ~~ 'hello'");
-    assert(format("foo !~ 'hello'") == "foo !~ 'hello'");
-    assert(format("foo ~* 'hello'") == "foo ~* 'hello'");
-    assert(format("foo ~~* 'hello'") == "foo ~~* 'hello'");
-    assert(format("foo !~~ 'hello'") == "foo !~~ 'hello'");
-    assert(format("foo !~* 'hello'") == "foo !~* 'hello'");
-    assert(format("foo !~~* 'hello'") == "foo !~~* 'hello'");
+    assert(format("column::int") == "column :: int")
+    assert(format("v->2") == "v -> 2")
+    assert(format("v->>2") == "v ->> 2")
+    assert(format("foo ~~ 'hello'") == "foo ~~ 'hello'")
+    assert(format("foo !~ 'hello'") == "foo !~ 'hello'")
+    assert(format("foo ~* 'hello'") == "foo ~* 'hello'")
+    assert(format("foo ~~* 'hello'") == "foo ~~* 'hello'")
+    assert(format("foo !~~ 'hello'") == "foo !~~ 'hello'")
+    assert(format("foo !~* 'hello'") == "foo !~* 'hello'")
+    assert(format("foo !~~* 'hello'") == "foo !~~* 'hello'")
   }
 
   test("keeps separation between multiple statements") {
-    assert(format("foo;bar;") == "foo;\nbar;");
-    assert(format("foo\n;bar;") == "foo;\nbar;");
-    assert(format("foo\n\n\n;bar;\n\n") == "foo;\nbar;");
+    assert(format("foo;bar;") == "foo;\nbar;")
+    assert(format("foo\n;bar;") == "foo;\nbar;")
+    assert(format("foo\n\n\n;bar;\n\n") == "foo;\nbar;")
 
-    val result = format("SELECT count(*),Column1 FROM Table1;\nSELECT count(*),Column1 FROM Table2;");
+    val result = format("SELECT count(*),Column1 FROM Table1;\nSELECT count(*),Column1 FROM Table2;")
     assert(
       result ==
         """|SELECT
@@ -499,6 +499,11 @@ abstract class BehavesLikeSqlFormatterTest(language: SqlDialect) extends AnyFunS
            |  Column1
            |FROM
            |  Table2;""".stripMargin
-    );
+    )
+  }
+
+  test("format comma") {
+    val result = format(",")
+    assert(result == ",")
   }
 }
