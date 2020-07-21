@@ -8,7 +8,7 @@ class Formatter(cfg: FormatConfig, tokenizer: Tokenizer) {
   private[this] val indentation = new Indentation(cfg.indent)
   private[this] val inlineBlock = new InlineBlock
   private[this] val params = cfg.params
-  private[this] var previousReservedWord: Token = _
+  private[this] var previousReservedWord: Option[Token] = None
   private[this] var tokens = Vector.empty[Token]
   private[this] var index = 0
 
@@ -26,45 +26,44 @@ class Formatter(cfg: FormatConfig, tokenizer: Tokenizer) {
 
   private def getFormattedQueryFromTokens = {
     var formattedQuery = ""
-    var _index = -1
 
-    for (token <- tokens) {
-      _index += 1
-      index = _index
+    tokens.zipWithIndex.foreach {
+      case (token, _index) =>
+        index = _index
 
-      token.tokenType match {
-        case TokenTypes.WHITESPACE =>
-        // ignore (we do our own whitespace formatting)
-        case TokenTypes.LINE_COMMENT =>
-          formattedQuery = formatLineComment(token, formattedQuery)
-        case TokenTypes.BLOCK_COMMENT =>
-          formattedQuery = formatBlockComment(token, formattedQuery)
-        case TokenTypes.RESERVED_TOPLEVEL =>
-          formattedQuery = formatToplevelReservedWord(token, formattedQuery)
-          previousReservedWord = token
-        case TokenTypes.RESERVED_NEWLINE =>
-          formattedQuery = formatNewlineReservedWord(token, formattedQuery)
-          previousReservedWord = token
-        case TokenTypes.RESERVED =>
-          formattedQuery = formatWithSpaces(token, formattedQuery)
-          previousReservedWord = token
-        case TokenTypes.OPEN_PAREN =>
-          formattedQuery = formatOpeningParentheses(token, formattedQuery)
-        case TokenTypes.CLOSE_PAREN =>
-          formattedQuery = formatClosingParentheses(token, formattedQuery)
-        case TokenTypes.PLACEHOLDER =>
-          formattedQuery = formatPlaceholder(token, formattedQuery)
-        case _ if token.value == "," =>
-          formattedQuery = formatComma(token, formattedQuery)
-        case _ if token.value == ":" =>
-          formattedQuery = formatWithSpaceAfter(token, formattedQuery)
-        case _ if token.value == "." =>
-          formattedQuery = formatWithoutSpaces(token, formattedQuery)
-        case _ if token.value == ";" =>
-          formattedQuery = formatQuerySeparator(token, formattedQuery)
-        case _ =>
-          formattedQuery = formatWithSpaces(token, formattedQuery)
-      }
+        token.tokenType match {
+          case TokenTypes.WHITESPACE =>
+          // ignore (we do our own whitespace formatting)
+          case TokenTypes.LINE_COMMENT =>
+            formattedQuery = formatLineComment(token, formattedQuery)
+          case TokenTypes.BLOCK_COMMENT =>
+            formattedQuery = formatBlockComment(token, formattedQuery)
+          case TokenTypes.RESERVED_TOPLEVEL =>
+            formattedQuery = formatToplevelReservedWord(token, formattedQuery)
+            previousReservedWord = Some(token)
+          case TokenTypes.RESERVED_NEWLINE =>
+            formattedQuery = formatNewlineReservedWord(token, formattedQuery)
+            previousReservedWord = Some(token)
+          case TokenTypes.RESERVED =>
+            formattedQuery = formatWithSpaces(token, formattedQuery)
+            previousReservedWord = Some(token)
+          case TokenTypes.OPEN_PAREN =>
+            formattedQuery = formatOpeningParentheses(token, formattedQuery)
+          case TokenTypes.CLOSE_PAREN =>
+            formattedQuery = formatClosingParentheses(token, formattedQuery)
+          case TokenTypes.PLACEHOLDER =>
+            formattedQuery = formatPlaceholder(token, formattedQuery)
+          case _ if token.value == "," =>
+            formattedQuery = formatComma(token, formattedQuery)
+          case _ if token.value == ":" =>
+            formattedQuery = formatWithSpaceAfter(token, formattedQuery)
+          case _ if token.value == "." =>
+            formattedQuery = formatWithoutSpaces(token, formattedQuery)
+          case _ if token.value == ";" =>
+            formattedQuery = formatQuerySeparator(token, formattedQuery)
+          case _ =>
+            formattedQuery = formatWithSpaces(token, formattedQuery)
+        }
     }
     formattedQuery
   }
@@ -79,11 +78,10 @@ class Formatter(cfg: FormatConfig, tokenizer: Tokenizer) {
     comment.replaceAll("\n", "\n" + indentation.getIndent)
 
   private def formatToplevelReservedWord(token: Token, query: String) = {
-    var _query = query
     indentation.decreaseTopLevel()
-    _query = addNewline(_query)
+    val addedNewlineQuery = addNewline(query)
     indentation.increaseToplevel()
-    _query += equalizeWhitespace(token.value)
+    val _query = addedNewlineQuery + equalizeWhitespace(token.value)
     addNewline(_query)
   }
 
@@ -128,11 +126,10 @@ class Formatter(cfg: FormatConfig, tokenizer: Tokenizer) {
 
   // Commas start a new line (unless within inline parentheses or SQL "LIMIT" clause)
   private def formatComma(token: Token, query: String) = {
-    var _query = query
-    _query = trimTrailingWhitespace(_query) + token.value + " "
-    if (inlineBlock.isActive) _query
-    else if (previousReservedWord.value.matches("(?i)^LIMIT$")) _query
-    else addNewline(_query)
+    val trimmed = trimTrailingWhitespace(query) + token.value + " "
+    if (inlineBlock.isActive) trimmed
+    else if (previousReservedWord.exists(_.value.matches("(?i)^LIMIT$"))) trimmed
+    else addNewline(trimmed)
   }
 
   private def formatWithSpaceAfter(token: Token, query: String) =
