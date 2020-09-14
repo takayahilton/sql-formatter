@@ -6,7 +6,7 @@ organization in ThisBuild := "com.github.takayahilton"
 onChangedBuildSource in Global := ReloadOnSourceChanges
 
 val Scala211 = "2.11.12"
-val Scala212 = "2.12.11"
+val Scala212 = "2.12.12"
 val Scala213 = "2.13.3"
 
 lazy val root = project
