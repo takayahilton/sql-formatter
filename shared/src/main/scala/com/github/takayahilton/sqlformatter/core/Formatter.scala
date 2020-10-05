@@ -154,19 +154,12 @@ class Formatter(cfg: FormatConfig, tokenizer: Tokenizer) {
       util.trimEnd(query)
   }
 
-  private def previousNonWhitespaceToken = {
-    var n = 1
-    while (previousToken(n).exists(_.tokenType == TokenTypes.WHITESPACE)) {
-      n += 1
-    }
-    previousToken(n)
-  }
+  private def previousNonWhitespaceToken =
+    tokens.take(index).reverseIterator.find(_.tokenType != TokenTypes.WHITESPACE)
 
-  private def previousToken(offset: Int): Option[Token] =
-    if (index - offset < 0)
+  private def previousToken: Option[Token] =
+    if (index - 1 < 0)
       None
     else
-      Some(tokens(index - offset))
-
-  private def previousToken: Option[Token] = previousToken(1)
+      Some(tokens(index - 1))
 }

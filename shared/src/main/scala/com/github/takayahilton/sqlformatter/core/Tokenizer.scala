@@ -96,12 +96,11 @@ class Tokenizer(val cfg: DialectConfig) {
 
     @scala.annotation.tailrec
     def go(input: String, previousToken: Option[Token], tokens: VectorBuilder[Token]): Vector[Token] =
-      input match {
-        case "" =>
-          tokens.result()
-        case _ =>
-          val token = getNextToken(input, previousToken).get // if token is None, something is wrong
-          go(input.substring(token.value.length), Some(token), tokens += token)
+      if (input.isEmpty)
+        tokens.result()
+      else {
+        val token = getNextToken(input, previousToken).get // if token is None, something is wrong
+        go(input.substring(token.value.length), Some(token), tokens += token)
       }
 
     go(input, None, new VectorBuilder)

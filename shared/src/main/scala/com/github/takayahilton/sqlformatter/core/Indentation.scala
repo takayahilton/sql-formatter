@@ -48,8 +48,7 @@ private[core] class Indentation(indent: String) {
     * throws away these as well.
     */
   def decreaseBlockLevel(): Unit = {
-    indentTypes = indentTypes.dropWhile(_ == IndentTypes.INDENT_TYPE_TOP_LEVEL)
-    indentTypes = indentTypes.drop(1)
+    indentTypes = indentTypes.dropWhile(_ == IndentTypes.INDENT_TYPE_TOP_LEVEL).drop(1)
   }
 }
 
