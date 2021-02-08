@@ -1,5 +1,7 @@
 package com.github.takayahilton.sqlformatter.core
 
+import scala.annotation.tailrec
+
 /**
   * Bookkeeper for inline blocks.
   * <p>
@@ -8,6 +10,8 @@ package com.github.takayahilton.sqlformatter.core
   * expressions where open-parenthesis causes newline and increase of indentation.
   */
 private[core] class InlineBlock {
+  import InlineBlock._
+
   private[this] var level: Int = 0
 
   /**
@@ -37,25 +41,27 @@ private[core] class InlineBlock {
     * @return {Boolean}
     */
   def isActive: Boolean = level > 0
+}
+
+private[core] object InlineBlock {
+  private val INLINE_MAX_LENGTH: Int = 50
 
   // Check if this should be an inline parentheses block
   // Examples are "NOW()", "COUNT(*)", "int(10)", key(`somecolumn`), DECIMAL(7,2)
   private def isInlineBlock(tokens: Vector[Token], index: Int): Boolean = {
-    var length = 0
-    var level = 0
-    for (i <- index until tokens.size) {
-      val token = tokens(i)
-      length += token.value.length
+    @tailrec
+    def go(tokens: List[Token], length: Int, level: Int): Boolean = tokens match {
       // Overran max length
-      if (length > InlineBlock.INLINE_MAX_LENGTH) return false
-      if (token.tokenType == TokenTypes.OPEN_PAREN) level += 1
-      else if (token.tokenType == TokenTypes.CLOSE_PAREN) {
-        level -= 1
-        if (level == 0) return true
-      }
-      if (isForbiddenToken(token)) return false
+      case _ if length > InlineBlock.INLINE_MAX_LENGTH => false
+      case Nil                                         => false
+      case token :: tail if token.tokenType == TokenTypes.OPEN_PAREN =>
+        go(tail, length + token.value.length, level + 1)
+      case token :: tail if token.tokenType == TokenTypes.CLOSE_PAREN =>
+        level < 2 || go(tail, length + token.value.length, level - 1)
+      case token :: _ if isForbiddenToken(token) => false
+      case token :: tail                         => go(tail, length + token.value.length, level)
     }
-    false
+    go(tokens.drop(index).toList, 0, 0)
   }
 
   // Reserved words that cause newlines, comments and semicolons
@@ -65,8 +71,4 @@ private[core] class InlineBlock {
       .contains(token.tokenType) ||
     token.value == ";"
   }
-}
-
-private[core] object InlineBlock {
-  private val INLINE_MAX_LENGTH: Int = 50
 }
