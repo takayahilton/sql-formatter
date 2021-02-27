@@ -12,12 +12,12 @@ script: >
 
 matrix:
   include:
-    - scala: [2.11.12]
+    - scala: [2.13.5]
       before_script:
         - curl https://raw.githubusercontent.com/scala-native/scala-native/master/scripts/travis_setup.sh | bash -x
       sudo: required
       script: sbt ++$TRAVIS_SCALA_VERSION check sql_formatterNative/test
-    - scala: [2.11.12]
+    - scala: [2.13.5]
       env:
         - SCALAJS_VERSION=0.6.33
       script: sbt ++$TRAVIS_SCALA_VERSION check sql_formatterJS/test
