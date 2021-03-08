@@ -88,7 +88,7 @@ wartremoverErrors in (Compile, compile) ++= Seq(
 
 lazy val sharedSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.scalatest" %%% "scalatest" % "3.2.3" % Test
+    "org.scalatest" %%% "scalatest" % "3.2.6" % Test
   )
 ) ++ Seq(Compile, Test).map(scalacOptions in (_, console) -= "-Xfatal-warnings")
 
