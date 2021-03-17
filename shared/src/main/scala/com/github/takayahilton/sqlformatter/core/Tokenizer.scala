@@ -4,8 +4,7 @@ import java.util.regex.Pattern
 
 import scala.collection.immutable.VectorBuilder
 
-/**
-  * @param cfg {String[]} cfg.reservedWords Reserved words in SQL
+/** @param cfg {String[]} cfg.reservedWords Reserved words in SQL
   *            {String[]} cfg.reservedToplevelWords Words that are set to new line separately
   *            {String[]} cfg.reservedNewlineWords Words that are set to newline
   *            {String[]} cfg.stringTypes String types to enable: "", '', ``, [], N''
@@ -85,8 +84,7 @@ class Tokenizer(val cfg: DialectConfig) {
   private def createParenRegex(parens: List[String]) =
     "(?i)" + "^(" + parens.map(Tokenizer.escapeParen).mkString("|") + ")"
 
-  /**
-    * Takes a SQL string and breaks it into tokens.
+  /** Takes a SQL string and breaks it into tokens.
     * Each token is an object with type and value.
     *
     * @param input input The SQL string

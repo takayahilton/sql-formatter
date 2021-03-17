@@ -1,7 +1,7 @@
 scala:
   - 2.11.12
   - 2.12.12
-  - 2.13.3
+  - 2.13.5
 
 jdk:
   - openjdk8
@@ -21,11 +21,11 @@ matrix:
       env:
         - SCALAJS_VERSION=0.6.33
       script: sbt ++$TRAVIS_SCALA_VERSION check sql_formatterJS/test
-    - scala: [2.12.11]
+    - scala: [2.12.13]
       env:
         - SCALAJS_VERSION=0.6.33
       script: sbt ++$TRAVIS_SCALA_VERSION check sql_formatterJS/test
-    - scala: [2.13.2]
+    - scala: [2.13.4]
       env:
         - SCALAJS_VERSION=0.6.33
       script: sbt ++$TRAVIS_SCALA_VERSION check sql_formatterJS/test

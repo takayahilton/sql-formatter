@@ -7,7 +7,7 @@ onChangedBuildSource in Global := ReloadOnSourceChanges
 
 val Scala211 = "2.11.12"
 val Scala212 = "2.12.12"
-val Scala213 = "2.13.3"
+val Scala213 = "2.13.5"
 
 lazy val root = project
   .in(file("."))
@@ -88,7 +88,7 @@ wartremoverErrors in (Compile, compile) ++= Seq(
 
 lazy val sharedSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.scalatest" %%% "scalatest" % "3.2.3" % Test
+    "org.scalatest" %%% "scalatest" % "3.2.6" % Test
   )
 ) ++ Seq(Compile, Test).map(scalacOptions in (_, console) -= "-Xfatal-warnings")
 

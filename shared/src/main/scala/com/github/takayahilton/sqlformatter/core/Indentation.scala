@@ -1,7 +1,6 @@
 package com.github.takayahilton.sqlformatter.core
 
-/**
-  * Manages indentation levels.
+/** Manages indentation levels.
   * <p>
   * There are two types of indentation levels:
   * <p>
@@ -12,29 +11,25 @@ private[core] class Indentation(indent: String) {
 
   private[this] var indentTypes: List[IndentTypes] = Nil
 
-  /**
-    * Returns current indentation string.
+  /** Returns current indentation string.
     *
     * @return {String}
     */
   def getIndent: String = indentTypes.indices.map(_ => indent).mkString
 
-  /**
-    * Increases indentation by one top-level indent.
+  /** Increases indentation by one top-level indent.
     */
   def increaseToplevel(): Unit = {
     indentTypes = IndentTypes.INDENT_TYPE_TOP_LEVEL :: indentTypes
   }
 
-  /**
-    * Increases indentation by one block-level indent.
+  /** Increases indentation by one block-level indent.
     */
   def increaseBlockLevel(): Unit = {
     indentTypes = IndentTypes.INDENT_TYPE_BLOCK_LEVEL :: indentTypes
   }
 
-  /**
-    * Decreases indentation by one top-level indent.
+  /** Decreases indentation by one top-level indent.
     * Does nothing when the previous indent is not top-level.
     */
   def decreaseTopLevel(): Unit = {
@@ -42,8 +37,7 @@ private[core] class Indentation(indent: String) {
       indentTypes = indentTypes.tail
   }
 
-  /**
-    * Decreases indentation by one block-level indent.
+  /** Decreases indentation by one block-level indent.
     * If there are top-level indents within the block-level indent,
     * throws away these as well.
     */
