@@ -1,7 +1,6 @@
 package com.github.takayahilton.sqlformatter.core
 
-/**
-  * Bookkeeper for inline blocks.
+/** Bookkeeper for inline blocks.
   * <p>
   * Inline blocks are parenthized expressions that are shorter than INLINE_MAX_LENGTH.
   * These blocks are formatted on a single line, unlike longer parenthized
@@ -10,8 +9,7 @@ package com.github.takayahilton.sqlformatter.core
 private[core] class InlineBlock {
   private[this] var level: Int = 0
 
-  /**
-    * Begins inline block when lookahead through upcoming tokens determines
+  /** Begins inline block when lookahead through upcoming tokens determines
     * that the block would be smaller than INLINE_MAX_LENGTH.
     *
     * @param tokens Array of all tokens
@@ -23,16 +21,14 @@ private[core] class InlineBlock {
     else level = 0
   }
 
-  /**
-    * Finishes current inline block.
+  /** Finishes current inline block.
     * There might be several nested ones.
     */
   def end(): Unit = {
     level -= 1
   }
 
-  /**
-    * True when inside an inline block
+  /** True when inside an inline block
     *
     * @return {Boolean}
     */

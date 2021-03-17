@@ -7,8 +7,7 @@ import com.github.takayahilton.sqlformatter.SqlParamable
 abstract class AbstractFormatter {
   def dialectConfig: DialectConfig
 
-  /**
-    * Formats DB2 query to make it easier to read
+  /** Formats DB2 query to make it easier to read
     *
     * @param query query string
     * @param cfg   FormatConfig

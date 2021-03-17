@@ -5,8 +5,7 @@ import com.github.takayahilton.sqlformatter.core.FormatConfig
 
 object SqlFormatter {
 
-  /**
-    * FormatConfig whitespaces in a query to make it easier to read.
+  /** FormatConfig whitespaces in a query to make it easier to read.
     *
     * @param query sql
     * @param cfg   cfg.indent Characters used for indentation, default is "  " (2 spaces)

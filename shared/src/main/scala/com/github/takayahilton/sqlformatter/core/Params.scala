@@ -2,8 +2,7 @@ package com.github.takayahilton.sqlformatter.core
 
 sealed trait Params extends Product with Serializable {
 
-  /**
-    * Returns param value that matches given placeholder with param key.
+  /** Returns param value that matches given placeholder with param key.
     *
     * @param token token.key Placeholder key
     *              token.value Placeholder value

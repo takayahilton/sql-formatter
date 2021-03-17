@@ -1,7 +1,6 @@
 package com.github.takayahilton.sqlformatter.core
 
-/**
-  * @param cfg       cfg.indent cfg.params
+/** @param cfg       cfg.indent cfg.params
   * @param tokenizer Tokenizer
   */
 class Formatter(cfg: FormatConfig, tokenizer: Tokenizer) {
@@ -12,8 +11,7 @@ class Formatter(cfg: FormatConfig, tokenizer: Tokenizer) {
   private[this] var tokens = Vector.empty[Token]
   private[this] var index = 0
 
-  /**
-    * Formats whitespaces in a SQL string to make it easier to read.
+  /** Formats whitespaces in a SQL string to make it easier to read.
     *
     * @param query The SQL query string
     * @return formatted query
