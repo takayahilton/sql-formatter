@@ -7,7 +7,7 @@ onChangedBuildSource in Global := ReloadOnSourceChanges
 
 val Scala211 = "2.11.12"
 val Scala212 = "2.12.12"
-val Scala213 = "2.13.5"
+val Scala213 = "2.13.6"
 
 lazy val root = project
   .in(file("."))
