@@ -1,5 +1,5 @@
 val scalaJSVersion =
-  Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.5.1")
+  Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.6.0")
 
 addSbtPlugin("org.scala-js"       % "sbt-scalajs"                   % scalaJSVersion)
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject"      % "1.0.0")
@@ -9,4 +9,4 @@ addSbtPlugin("org.xerial.sbt"     % "sbt-sonatype"                  % "3.9.7")
 addSbtPlugin("com.github.sbt"     % "sbt-release"                   % "1.0.15")
 addSbtPlugin("org.scalameta"      % "sbt-scalafmt"                  % "2.4.2")
 addSbtPlugin("org.scoverage"      % "sbt-scoverage"                 % "1.8.2")
-addSbtPlugin("org.wartremover"    % "sbt-wartremover"               % "2.4.13")
+addSbtPlugin("org.wartremover"    % "sbt-wartremover"               % "2.4.15")
