@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        scala: [2.11.12, 2.12.15, 2.13.8]
+        scala: [2.11.12, 2.12.15, 2.13.12]
         project: [sql_formatterJVM, sql_formatterJS, sql_formatterNative]
         coverage: [coverage]
         coverageReport: [coverageReport]
